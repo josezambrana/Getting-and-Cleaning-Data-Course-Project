@@ -4,19 +4,19 @@
 # 1. Merges the training and the test sets to create one data set.
 # ----------------------------------------------------------------------------
 # Reads training data
-training.set <- read.table('./data/train/X_train.txt')
-training.labels <- read.table('./data/train/y_train.txt', 
+training.set <- read.table('./UCI HAR Dataset/train/X_train.txt')
+training.labels <- read.table('./UCI HAR Dataset/train/y_train.txt', 
                               col.names=c('Activity'))
-training.subject <- read.table('./data/train/subject_train.txt',
+training.subject <- read.table('./UCI HAR Dataset/train/subject_train.txt',
                                col.names=c('Subject'))
 
 # Creates the training dataset.
 training <- cbind(training.set, training.labels, training.subject)
 
 # Reads test data
-test.set <- read.table('./data/train/X_train.txt')
-test.labels <- read.table('./data/train/y_train.txt', col.names=c('Activity'))
-test.subject <- read.table('./data/train/subject_train.txt', col.names=c('Subject'))
+test.set <- read.table('./UCI HAR Dataset/train/X_train.txt')
+test.labels <- read.table('./UCI HAR Dataset/train/y_train.txt', col.names=c('Activity'))
+test.subject <- read.table('./UCI HAR Dataset/train/subject_train.txt', col.names=c('Subject'))
 
 # Creates the test dataset.
 test <- cbind(test.set, test.labels, test.subject)
@@ -29,7 +29,7 @@ dataset <- rbind(test, training)
 
 #    Creates a vector with TRUE values on the poisitions where the value
 #    contains -mean() or -std()
-features <- read.table('./data/features.txt')
+features <- read.table('./UCI HAR Dataset/features.txt')
 mean.or.std <- grepl('-mean\\(\\)|-std\\(\\)', features[,2])
 
 #    Select only the measurements on the mean and standard deviation.
@@ -39,7 +39,7 @@ dataset <- dataset[, selector]
 
 # 3. Uses descriptive activity names to name the activities in the data set.
 # ----------------------------------------------------------------------------
-activity.labels <- read.table('./data/activity_labels.txt',
+activity.labels <- read.table('./UCI HAR Dataset/activity_labels.txt',
                               col.names=c('Activity', 'Labels'))
 
 # Parse activity column in the dataset as factor
@@ -64,5 +64,8 @@ colnames(dataset) <- c(mean.or.std.colnames, 'Activity', 'Subject')
 # 5. From the data set in step 4, creates a second, independent tidy data set 
 #    with the average of each variable for each activity and each subject.
 
+# Calculate mean for all columns grouping by Activity and Subject
 second <- dataset %>% group_by(Activity, Subject) %>% summarise_each(funs(mean))
+
+# Writing the second tidy dataset
 write.table(second, 'dataset.txt', row.name=FALSE)
