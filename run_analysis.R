@@ -32,7 +32,8 @@ dataset <- rbind(test, training)
 features <- read.table('./UCI HAR Dataset/features.txt')
 mean.or.std <- grepl('-mean\\(\\)|-std\\(\\)', features[,2])
 
-#    Select only the measurements on the mean and standard deviation.
+#    Select only the measurements for the mean and standard deviation also 
+#    activity and subject columns.
 selector <- c(mean.or.std, TRUE, TRUE)
 dataset <- dataset[, selector]
 
@@ -61,11 +62,15 @@ mean.or.std.colnames <- as.character(features[, 2][mean.or.std])
 colnames(dataset) <- c(mean.or.std.colnames, 'Activity', 'Subject')
 
 
-# 5. From the data set in step 4, creates a second, independent tidy data set 
+# 5. From the data set in step 4, creates a second, independent tidy data set
 #    with the average of each variable for each activity and each subject.
+# ----------------------------------------------------------------------------
 
 # Calculate mean for all columns grouping by Activity and Subject
-second <- dataset %>% group_by(Activity, Subject) %>% summarise_each(funs(mean))
+library(dplyr)
+result <- dataset %>% group_by(Activity, Subject) %>% summarise_each(funs(mean))
 
 # Writing the second tidy dataset
-write.table(second, 'dataset.txt', row.name=FALSE)
+write.table(result, 'dataset.txt', row.name=FALSE)
+
+print("dataset.txt with the tidt dataset file created successfully")
