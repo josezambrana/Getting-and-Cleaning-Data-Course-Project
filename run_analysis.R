@@ -73,4 +73,4 @@ result <- dataset %>% group_by(Activity, Subject) %>% summarise_each(funs(mean))
 # Writing the second tidy dataset
 write.table(result, 'dataset.txt', row.name=FALSE)
 
-print("dataset.txt with the tidt dataset file created successfully")
+print("dataset.txt with the tidy dataset file created successfully")
